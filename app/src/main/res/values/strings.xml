@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Simple Encryption</string>
+    <string name="message_label">Message</string>
+    <string name="key_label">Key</string>
+    <string name="encrypt">Encrypt</string>
+    <string name="decrypt">Decrypt</string>
+    <string name="keyword_help_text">Set of characters to encrypt/decrypt the message. Spaces will be ignored</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="important_information">Important information</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="app_encryption_info">The method or methods used for encryption in this app are not safe and should not be used in production environments nor to protect sensible data. This is only meant for fun and games.</string>
+</resources>

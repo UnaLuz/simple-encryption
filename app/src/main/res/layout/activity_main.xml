@@ -9,9 +9,10 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/menu"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="192dp"
         app:startIconDrawable="@drawable/ic_lock"
         app:startIconTint="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,11 +20,11 @@
         >
 
         <AutoCompleteTextView
+            android:id="@+id/menuAutoCompleteTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/encryption_method"
+            android:hint="@string/method"
             android:inputType="none"
-            android:text="@string/caesar"
             tools:ignore="TextContrastCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>

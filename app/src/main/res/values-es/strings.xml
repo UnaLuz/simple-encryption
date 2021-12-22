@@ -9,6 +9,7 @@
     <string name="disclaimer">Descargo de responsabilidad</string>
     <string name="important_information">Informacion importante</string>
     <string name="app_encryption_info">El o los metodos utilizados para encriptado en este app no son seguros y no deben ser usados en ambientes de produccion ni para proteger datos sensibles. Solo debe usarse por diversion y juegos.</string>
-    <string name="encryption_method">Metodo de encriptado</string>
+    <string name="method">Metodo</string>
     <string name="caesar">Cesar</string>
+    <string name="simple_substitution">Sustitucion simple</string>
 </resources>

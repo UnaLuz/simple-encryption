@@ -14,18 +14,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Get the strings for the menu and the dropdown view
-        val encryptionMethods = resources.getStringArray(R.array.encryptionMethods)
-        val dropdownMenu = findViewById<AutoCompleteTextView>(R.id.menuAutoCompleteTextView)
-        // Set the adapter
-        val adapter = ArrayAdapter(
-            this, R.layout.menu_list_item,
-            encryptionMethods
-        )
-        with(dropdownMenu){
-            setAdapter(adapter)
-            setText(getString(R.string.simple_substitution), false)
-        }
+        configureDropdownMenu()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -46,6 +35,26 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             else -> false
+        }
+    }
+
+    private fun configureDropdownMenu() {
+        // Get the strings for the menu and the dropdown view
+        val encryptionMethods = resources.getStringArray(R.array.encryptionMethods)
+        val dropdownMenu = findViewById<AutoCompleteTextView>(R.id.menuAutoCompleteTextView)
+
+        // Set the adapter
+        val adapter = ArrayAdapter(
+            this, R.layout.menu_list_item,
+            encryptionMethods
+        )
+        with(dropdownMenu) {
+            setAdapter(adapter)
+            // Put the selected encryption method or simple_substitution by default
+            setText(
+                getString(R.string.simple_substitution),
+                false
+            )
         }
     }
 }

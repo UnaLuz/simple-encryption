@@ -13,11 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="192dp"
-        app:startIconDrawable="@drawable/ic_lock"
-        app:startIconTint="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        >
+        app:startIconDrawable="@drawable/ic_lock"
+        app:startIconTint="?attr/colorPrimary">
 
         <AutoCompleteTextView
             android:id="@+id/menuAutoCompleteTextView"
@@ -30,40 +29,17 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/messageTextField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="@string/message_label"
-        app:endIconMode="clear_text"
-        app:layout_constraintBottom_toTopOf="@+id/keywordTextField"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:startIconDrawable="@drawable/ic_baseline_text_field"
-        app:startIconTint="?attr/colorPrimary">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/messageEditTextField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="#616161"
-            tools:ignore="TextContrastCheck" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/keywordTextField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="@string/key_label"
         app:endIconMode="password_toggle"
         app:helperText="@string/keyword_help_text"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menu"
         app:startIconDrawable="@drawable/ic_baseline_key"
         app:startIconTint="?attr/colorPrimary">
 
@@ -76,33 +52,49 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        style="?android:attr/buttonBarButtonStyle"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/messageTextField"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
+        android:hint="@string/message_label"
+        app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keywordTextField">
+        app:layout_constraintTop_toBottomOf="@+id/keywordTextField"
+        app:startIconDrawable="@drawable/ic_baseline_text_field"
+        app:startIconTint="?attr/colorPrimary">
 
-        <Button
-            android:id="@+id/encryptButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/messageEditTextField"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:text="@string/encrypt" />
+            android:textColorHint="#616161"
+            tools:ignore="TextContrastCheck" />
 
-        <Button
-            android:id="@+id/DecryptButton"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:text="@string/decrypt" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+    <Button
+        android:id="@+id/encryptButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/encrypt"
+        app:layout_constraintStart_toStartOf="@+id/messageTextField"
+        app:layout_constraintTop_toBottomOf="@+id/messageTextField" />
+
+    <Button
+        android:id="@+id/DecryptButton"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/decrypt"
+        app:layout_constraintEnd_toEndOf="@+id/messageTextField"
+        app:layout_constraintTop_toTopOf="@+id/encryptButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

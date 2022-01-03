@@ -1,12 +1,10 @@
 package com.unaluzdev.simpleencryption
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -17,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var keywordEditTextField: EditText
     private lateinit var dropdownMenu: AutoCompleteTextView
 
-    private val alphabet = ('A'..'Z').toList()
+    private val alphabet = ('A'..'Z').toList() + ('a'..'z').toList()
 
     enum class Methods(val RID: Int) {
         CAESAR(R.string.caesar),
@@ -86,30 +84,101 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Ciphers the message using the keyword according to the method selected
+     * returns true if process was successful
+     * returns false if message or keyword are blank
+     */
     private fun cipher(decrypt: Boolean = false): Boolean {
         val message = messageEditTextField.text.toString()
         val keyword = keywordEditTextField.text.toString()
         val method = dropdownMenu.text.toString()
 
-        if (decrypt) {
-            println("Decrypting the message '${message}' with the method '${method}'")
-            when (method) {
-                getString(Methods.SIMPLE_SUBSTITUTION.RID) -> decryptSS(message, keyword)
-                getString(Methods.CAESAR.RID) -> decryptCaesar(message, keyword)
-                getString(Methods.ONE_TIME_PAD.RID) -> decryptOTP(message, keyword)
-            }
-        } else {
-            println("Encrypting the message '${message}' with the method '${method}'")
-            when (method) {
-                getString(Methods.SIMPLE_SUBSTITUTION.RID) -> encryptSS(message, keyword)
-                getString(Methods.CAESAR.RID) -> encryptCaesar(message, keyword)
-                getString(Methods.ONE_TIME_PAD.RID) -> encryptOTP(message, keyword)
-            }
+        if (message.isBlank()) {
+            Toast.makeText(
+                this,
+                "Can't cipher the message because it's empty",
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
         }
-        return decrypt
+
+        if (keyword.isBlank()) {
+            Toast.makeText(
+                this,
+                "Can't cipher the message because there is no keyword",
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+
+        val newMessage: String? = when (method) {
+            getString(Methods.SIMPLE_SUBSTITUTION.RID) -> {
+                if (decrypt) decryptSS(message, keyword) else encryptSS(message, keyword)
+            }
+            getString(Methods.CAESAR.RID) -> {
+                if (decrypt) decryptCaesar(message, keyword) else encryptCaesar(message, keyword)
+            }
+            getString(Methods.ONE_TIME_PAD.RID) -> {
+                if (decrypt) decryptOTP(message, keyword) else encryptOTP(message, keyword)
+            }
+            else -> null
+        }
+
+        Log.d("MainActivity", "El mensaje encriptado es: $newMessage")
+
+        if (newMessage.isNullOrBlank()) {
+            Toast.makeText(
+                this,
+                "An unknown error occurred while processing the message",
+                Toast.LENGTH_SHORT
+            ).show()
+            return false
+        }
+
+        // If everything went well and message was ciphered show ir
+        messageEditTextField.setText(newMessage)
+
+        return true
     }
 
-    private fun encryptSS(message: String, keyword: String) {
-        TODO("Think how to encrypt the message")
+    private fun encryptOTP(message: String, keyword: String): String {
+        TODO("Needs more research")
+    }
+
+    private fun encryptCaesar(message: String, keyword: String): String {
+        TODO("Needs more research")
+    }
+
+    /**
+     * Encrypts the given 'message' using the given 'keyword' and the Simple Substitution method
+     */
+    private fun encryptSS(message: String, keyword: String): String {
+        val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
+        val newMessage = message.map { newChar(modifiedAlphabet, it) }
+        Log.d("MainActivity", "encryptSS: $newMessage")
+        return newMessage.joinToString(separator = "")
+    }
+
+    private fun decryptOTP(message: String, keyword: String): String {
+        TODO("Needs more research")
+    }
+
+    private fun decryptCaesar(message: String, keyword: String): String {
+        TODO("Needs more research")
+    }
+
+    private fun decryptSS(message: String, keyword: String): String {
+        TODO("Needs more research")
+    }
+
+    /**
+     * Removes the duplicate characters of a given list
+     */
+    private fun withoutDuplicates(charList: List<Char>) = charList.toSet().toList()
+
+    private fun newChar(charList: List<Char>, char: Char): Char{
+        val index = alphabet.indexOf(char)
+        return if(index != -1) charList[index] else char
     }
 }

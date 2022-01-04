@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun encryptSS(message: String, keyword: String): String {
         val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
-        val newMessage = message.map { newChar(modifiedAlphabet, it) }
+        val newMessage = message.map { newChar(modifiedAlphabet, alphabet, it) }
         Log.d("MainActivity", "encryptSS: $newMessage")
         return newMessage.joinToString(separator = "")
     }
@@ -169,7 +169,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun decryptSS(message: String, keyword: String): String {
-        TODO("Needs more research")
+        val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
+        val newMessage = message.map { newChar(alphabet, modifiedAlphabet, it) }
+        Log.d("MainActivity", "encryptSS: $newMessage")
+        return newMessage.joinToString(separator = "")
     }
 
     /**
@@ -177,8 +180,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun withoutDuplicates(charList: List<Char>) = charList.toSet().toList()
 
-    private fun newChar(charList: List<Char>, char: Char): Char{
-        val index = alphabet.indexOf(char)
-        return if(index != -1) charList[index] else char
+    private fun newChar(newCharList: List<Char>, originalCharList: List<Char>, char: Char): Char{
+        val index = originalCharList.indexOf(char)
+        return if(index != -1) newCharList[index] else char
     }
 }

@@ -168,6 +168,11 @@ class MainActivity : AppCompatActivity() {
         TODO("Needs more research")
     }
 
+    /**
+     * Decrypts the given 'message' using the given 'keyword' and the Simple Substitution method.
+     *
+     * Returns the decrypted message as a string
+     */
     private fun decryptSS(message: String, keyword: String): String {
         val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
         val newMessage = message.map { newChar(alphabet, modifiedAlphabet, it) }
@@ -180,6 +185,15 @@ class MainActivity : AppCompatActivity() {
      */
     private fun withoutDuplicates(charList: List<Char>) = charList.toSet().toList()
 
+    /**
+     * Receives two Char lists, an original list to get the index from of the char,
+     * and a new list to get the new char at that position/index.
+     *
+     * Returns the char that is in the same position as the given char but in the new list.
+     * Returns the same char if the char is not in the original list.
+     *
+     * Raises an error if the index found is greater than the max index of the new list.
+     */
     private fun newChar(newCharList: List<Char>, originalCharList: List<Char>, char: Char): Char{
         val index = originalCharList.indexOf(char)
         return if(index != -1) newCharList[index] else char

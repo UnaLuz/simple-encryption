@@ -123,8 +123,7 @@ class MainActivity : AppCompatActivity() {
                 if (!keyword.isDigitsOnly()) {
                     digitError = true
                     null // newMessage will be null
-                } else if (decrypt) decryptCaesar(message, keyword)
-                else encryptCaesar(message, keyword)
+                } else caesarCipher(message, keyword, decrypt)
             }
             getString(Methods.ONE_TIME_PAD.RID) -> {
                 if (keyword.length != message.length) {
@@ -141,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         if (newMessage.isNullOrBlank()) {
             Toast.makeText(
                 this,
-                if (digitError) "Keyword needs to be an integer"
+                if (digitError) "Keyword needs to be a natural number"
                 else if (lengthError) "Keyword and message must have the same length"
                 else "An unknown error occurred while processing the message",
                 Toast.LENGTH_SHORT
@@ -162,9 +161,11 @@ class MainActivity : AppCompatActivity() {
         return newMessage.joinToString(separator = "")
     }
 
-    private fun encryptCaesar(message: String, keyword: String): String {
+    private fun caesarCipher(message: String, keyword: String, decrypt: Boolean = false): String {
         val keyNumber = keyword.toInt()
-        val newMessage = message.map { (it.code + keyNumber).asChar() }
+        val newMessage = message.map {
+            (if (decrypt) it.code - keyNumber else it.code + keyNumber).asChar()
+        }
         return newMessage.joinToString(separator = "")
     }
 
@@ -182,12 +183,6 @@ class MainActivity : AppCompatActivity() {
         val newMessage = message.mapIndexed { index, char ->
             (char.code - keyword[index].code).asChar()
         }
-        return newMessage.joinToString(separator = "")
-    }
-
-    private fun decryptCaesar(message: String, keyword: String): String {
-        val keyNumber = keyword.toInt()
-        val newMessage = message.map { (it.code - keyNumber).asChar() }
         return newMessage.joinToString(separator = "")
     }
 

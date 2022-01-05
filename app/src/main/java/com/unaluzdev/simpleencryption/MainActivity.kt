@@ -116,9 +116,8 @@ class MainActivity : AppCompatActivity() {
         var digitError = false
         var lengthError = false
         val newMessage: String? = when (method) {
-            getString(Methods.SIMPLE_SUBSTITUTION.RID) -> {
-                if (decrypt) decryptSS(message, keyword) else encryptSS(message, keyword)
-            }
+            getString(Methods.SIMPLE_SUBSTITUTION.RID) ->
+                simpleSubstitutionCipher(message, keyword, decrypt)
             getString(Methods.CAESAR.RID) -> {
                 if (!keyword.isDigitsOnly()) {
                     digitError = true
@@ -173,24 +172,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Encrypts the given 'message' using the given 'keyword' and the Simple Substitution method
+     * Ciphers the given 'message' using the given 'keyword' and the Simple Substitution method
      */
-    private fun encryptSS(message: String, keyword: String): String {
+    private fun simpleSubstitutionCipher(
+        message: String,
+        keyword: String,
+        decrypt: Boolean = false
+    ): String {
         val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
-        val newMessage = message.map { newChar(modifiedAlphabet, alphabet, it) }
-        Log.d("MainActivity", "encryptSS: $newMessage")
-        return newMessage.joinToString(separator = "")
-    }
-
-    /**
-     * Decrypts the given 'message' using the given 'keyword' and the Simple Substitution method.
-     *
-     * Returns the decrypted message as a string
-     */
-    private fun decryptSS(message: String, keyword: String): String {
-        val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
-        val newMessage = message.map { newChar(alphabet, modifiedAlphabet, it) }
-        Log.d("MainActivity", "encryptSS: $newMessage")
+        val newMessage = message.map {
+            if (decrypt) newChar(alphabet, modifiedAlphabet, it)
+            else newChar(modifiedAlphabet, alphabet, it)
+        }
         return newMessage.joinToString(separator = "")
     }
 

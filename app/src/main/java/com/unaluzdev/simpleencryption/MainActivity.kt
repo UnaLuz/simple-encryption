@@ -129,8 +129,7 @@ class MainActivity : AppCompatActivity() {
                 if (keyword.length != message.length) {
                     lengthError = true
                     null
-                } else if (decrypt) decryptOTP(message, keyword)
-                else encryptOTP(message, keyword)
+                } else oneTimePadCipher(message, keyword, decrypt)
             }
             else -> null
         }
@@ -154,9 +153,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun encryptOTP(message: String, keyword: String): String {
+    private fun oneTimePadCipher(
+        message: String,
+        keyword: String,
+        decrypt: Boolean = false
+    ): String {
         val newMessage = message.mapIndexed { index, char ->
-            (char.code + keyword[index].code).asChar()
+            (if (decrypt) char.code - keyword[index].code else char.code + keyword[index].code).asChar()
         }
         return newMessage.joinToString(separator = "")
     }
@@ -176,13 +179,6 @@ class MainActivity : AppCompatActivity() {
         val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
         val newMessage = message.map { newChar(modifiedAlphabet, alphabet, it) }
         Log.d("MainActivity", "encryptSS: $newMessage")
-        return newMessage.joinToString(separator = "")
-    }
-
-    private fun decryptOTP(message: String, keyword: String): String {
-        val newMessage = message.mapIndexed { index, char ->
-            (char.code - keyword[index].code).asChar()
-        }
         return newMessage.joinToString(separator = "")
     }
 

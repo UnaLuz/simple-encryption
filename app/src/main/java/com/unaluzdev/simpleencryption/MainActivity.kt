@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainActivity : AppCompatActivity() {
@@ -112,12 +113,17 @@ class MainActivity : AppCompatActivity() {
             return false
         }
 
+        var digitError = false
         val newMessage: String? = when (method) {
             getString(Methods.SIMPLE_SUBSTITUTION.RID) -> {
                 if (decrypt) decryptSS(message, keyword) else encryptSS(message, keyword)
             }
             getString(Methods.CAESAR.RID) -> {
-                if (decrypt) decryptCaesar(message, keyword) else encryptCaesar(message, keyword)
+                if (!keyword.isDigitsOnly()) {
+                    digitError = true
+                    null // newMessage will be null
+                } else if (decrypt) decryptCaesar(message, keyword)
+                else encryptCaesar(message, keyword)
             }
             getString(Methods.ONE_TIME_PAD.RID) -> {
                 if (decrypt) decryptOTP(message, keyword) else encryptOTP(message, keyword)
@@ -130,7 +136,9 @@ class MainActivity : AppCompatActivity() {
         if (newMessage.isNullOrBlank()) {
             Toast.makeText(
                 this,
-                "An unknown error occurred while processing the message",
+                if (digitError) {
+                    "Keyword needs to be an integer"
+                } else "An unknown error occurred while processing the message",
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -147,7 +155,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun encryptCaesar(message: String, keyword: String): String {
-        TODO("Needs more research")
+        val keyNumber = keyword.toInt()
+        val newMessage = message.map { (it.code + keyNumber).mod(Char.MAX_VALUE.code).toChar() }
+        return newMessage.joinToString(separator = "")
     }
 
     /**
@@ -165,7 +175,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun decryptCaesar(message: String, keyword: String): String {
-        TODO("Needs more research")
+        val keyNumber = keyword.toInt()
+        val newMessage = message.map { (it.code - keyNumber).mod(Char.MAX_VALUE.code).toChar() }
+        return newMessage.joinToString(separator = "")
     }
 
     /**
@@ -194,8 +206,8 @@ class MainActivity : AppCompatActivity() {
      *
      * Raises an error if the index found is greater than the max index of the new list.
      */
-    private fun newChar(newCharList: List<Char>, originalCharList: List<Char>, char: Char): Char{
+    private fun newChar(newCharList: List<Char>, originalCharList: List<Char>, char: Char): Char {
         val index = originalCharList.indexOf(char)
-        return if(index != -1) newCharList[index] else char
+        return if (index != -1) newCharList[index] else char
     }
 }

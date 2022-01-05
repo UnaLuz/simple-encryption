@@ -114,6 +114,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         var digitError = false
+        var lengthError = false
         val newMessage: String? = when (method) {
             getString(Methods.SIMPLE_SUBSTITUTION.RID) -> {
                 if (decrypt) decryptSS(message, keyword) else encryptSS(message, keyword)
@@ -126,7 +127,11 @@ class MainActivity : AppCompatActivity() {
                 else encryptCaesar(message, keyword)
             }
             getString(Methods.ONE_TIME_PAD.RID) -> {
-                if (decrypt) decryptOTP(message, keyword) else encryptOTP(message, keyword)
+                if (keyword.length != message.length) {
+                    lengthError = true
+                    null
+                } else if (decrypt) decryptOTP(message, keyword)
+                else encryptOTP(message, keyword)
             }
             else -> null
         }
@@ -136,9 +141,9 @@ class MainActivity : AppCompatActivity() {
         if (newMessage.isNullOrBlank()) {
             Toast.makeText(
                 this,
-                if (digitError) {
-                    "Keyword needs to be an integer"
-                } else "An unknown error occurred while processing the message",
+                if (digitError) "Keyword needs to be an integer"
+                else if (lengthError) "Keyword and message must have the same length"
+                else "An unknown error occurred while processing the message",
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -151,12 +156,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun encryptOTP(message: String, keyword: String): String {
-        TODO("Needs more research")
+        val newMessage = message.mapIndexed { index, char ->
+            (char.code + keyword[index].code).asChar()
+        }
+        return newMessage.joinToString(separator = "")
     }
 
     private fun encryptCaesar(message: String, keyword: String): String {
         val keyNumber = keyword.toInt()
-        val newMessage = message.map { (it.code + keyNumber).mod(Char.MAX_VALUE.code).toChar() }
+        val newMessage = message.map { (it.code + keyNumber).asChar() }
         return newMessage.joinToString(separator = "")
     }
 
@@ -171,12 +179,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun decryptOTP(message: String, keyword: String): String {
-        TODO("Needs more research")
+        val newMessage = message.mapIndexed { index, char ->
+            (char.code - keyword[index].code).asChar()
+        }
+        return newMessage.joinToString(separator = "")
     }
 
     private fun decryptCaesar(message: String, keyword: String): String {
         val keyNumber = keyword.toInt()
-        val newMessage = message.map { (it.code - keyNumber).mod(Char.MAX_VALUE.code).toChar() }
+        val newMessage = message.map { (it.code - keyNumber).asChar() }
         return newMessage.joinToString(separator = "")
     }
 
@@ -210,4 +221,6 @@ class MainActivity : AppCompatActivity() {
         val index = originalCharList.indexOf(char)
         return if (index != -1) newCharList[index] else char
     }
+
+    private fun Int.asChar(): Char = this.mod(Char.MAX_VALUE.code).toChar()
 }

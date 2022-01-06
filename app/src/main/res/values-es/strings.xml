@@ -12,4 +12,9 @@
     <string name="method">Metodo</string>
     <string name="caesar">Cesar</string>
     <string name="simple_substitution">Sustitucion simple</string>
+    <string name="error_message_empty">No se puede cifrar el mensaje porque esta vacio</string>
+    <string name="error_keyword_empty">No se puede cifrar el mensaje porque no hay clave</string>
+    <string name="error_keyword_not_natural_number">La clave debe ser un numero natural</string>
+    <string name="error_keyword_and_message_length_differ">Clave y mensaje deben tener el mismo tamaño</string>
+    <string name="error_unknown_at_cipher">Un error desconocido ocurrio mientras se procesaba el mensaje</string>
 </resources>

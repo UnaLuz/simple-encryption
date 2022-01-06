@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
                 this,
                 if (digitError) getString(R.string.error_keyword_not_natural_number)
                 else if (lengthError) getString(R.string.error_keyword_and_message_length_differ)
-                else getString(R.string.error_unkown_at_cipher),
+                else getString(R.string.error_unknown_at_cipher),
                 Toast.LENGTH_SHORT
             ).show()
             return false

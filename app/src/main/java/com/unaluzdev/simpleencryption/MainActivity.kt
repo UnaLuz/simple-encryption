@@ -179,7 +179,9 @@ class MainActivity : AppCompatActivity() {
         keyword: String,
         decrypt: Boolean = false
     ): String {
-        val modifiedAlphabet = withoutDuplicates(withoutDuplicates(keyword.toList()) + alphabet)
+        val noSpacesKeyword = keyword.replace(regex = Regex("\\s"), "")
+        val modifiedAlphabet =
+            withoutDuplicates(withoutDuplicates(noSpacesKeyword.toList()) + alphabet)
         val newMessage = message.map {
             if (decrypt) newChar(alphabet, modifiedAlphabet, it)
             else newChar(modifiedAlphabet, alphabet, it)

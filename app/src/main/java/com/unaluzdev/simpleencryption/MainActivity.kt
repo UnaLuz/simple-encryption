@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 if (!keyword.isDigitsOnly()) {
                     digitError = true
                     null // newMessage will be null
-                } else caesarCipher(message, keyword, decrypt)
+                } else caesarCipher(message, keyword.toInt(), decrypt)
             }
             getString(Methods.ONE_TIME_PAD.RID) -> {
                 if (keyword.length != message.length) {
@@ -168,12 +168,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Ciphers the given 'message' using the given 'keyword and Caesar cipher method.
-     * 'keyword' must be castable to Int
+     * Ciphers the given 'message' using the given 'keyNumber' and Caesar cipher method.
+     * 'keyNumber' must be a positive integer (or natural number).
      * Accepts an optional argument 'decrypt', when true it subtracts instead of adding the key
      */
-    private fun caesarCipher(message: String, keyword: String, decrypt: Boolean = false): String {
-        val keyNumber = keyword.toInt()
+    private fun caesarCipher(message: String, keyNumber: Int, decrypt: Boolean = false): String {
         val newMessage = message.map {
             (if (decrypt) it.code - keyNumber else it.code + keyNumber).asChar()
         }

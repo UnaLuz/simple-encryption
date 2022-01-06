@@ -1,7 +1,6 @@
 package com.unaluzdev.simpleencryption
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -133,14 +132,14 @@ class MainActivity : AppCompatActivity() {
             else -> null
         }
 
-        Log.d("MainActivity", "El mensaje encriptado es: $newMessage")
-
         if (newMessage.isNullOrBlank()) {
             Toast.makeText(
                 this,
-                if (digitError) getString(R.string.error_keyword_not_natural_number)
-                else if (lengthError) getString(R.string.error_keyword_and_message_length_differ)
-                else getString(R.string.error_unknown_at_cipher),
+                when {
+                    digitError -> getString(R.string.error_keyword_not_natural_number)
+                    lengthError -> getString(R.string.error_keyword_and_message_length_differ)
+                    else -> getString(R.string.error_unknown_at_cipher)
+                },
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -152,6 +151,11 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    /**
+     * Ciphers the given 'message' using the given 'keyword and One-Time-Pad cipher method.
+     * 'keyword' and 'message' must have the same length.
+     * Accepts an optional argument 'decrypt', when true it subtracts instead of adding the char code.
+     */
     private fun oneTimePadCipher(
         message: String,
         keyword: String,
@@ -163,6 +167,11 @@ class MainActivity : AppCompatActivity() {
         return newMessage.joinToString(separator = "")
     }
 
+    /**
+     * Ciphers the given 'message' using the given 'keyword and Caesar cipher method.
+     * 'keyword' must be castable to Int
+     * Accepts an optional argument 'decrypt', when true it subtracts instead of adding the key
+     */
     private fun caesarCipher(message: String, keyword: String, decrypt: Boolean = false): String {
         val keyNumber = keyword.toInt()
         val newMessage = message.map {

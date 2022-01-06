@@ -13,6 +13,11 @@
     <string name="caesar">Caesar</string>
     <string name="simple_substitution">Simple substitution</string>
     <string name="one_time_pad" translatable="false">One-time-pad</string>
+    <string name="error_message_empty">Can\'t cipher the message because it\'s empty</string>
+    <string name="error_keyword_empty">Can\'t cipher the message because there is no keyword</string>
+    <string name="error_keyword_not_natural_number">Keyword needs to be a natural number</string>
+    <string name="error_keyword_and_message_length_differ">Keyword and message must have the same length</string>
+    <string name="error_unkown_at_cipher">An unknown error occurred while processing the message</string>
     <!-- Encryption methods as a string array -->
     <string-array name="encryptionMethods">
         <item>@string/caesar</item>

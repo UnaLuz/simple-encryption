@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
         if (message.isBlank()) {
             Toast.makeText(
                 this,
-                "Can't cipher the message because it's empty",
+                getString(R.string.error_message_empty),
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         if (keyword.isBlank()) {
             Toast.makeText(
                 this,
-                "Can't cipher the message because there is no keyword",
+                getString(R.string.error_keyword_empty),
                 Toast.LENGTH_SHORT
             ).show()
             return false
@@ -138,9 +138,9 @@ class MainActivity : AppCompatActivity() {
         if (newMessage.isNullOrBlank()) {
             Toast.makeText(
                 this,
-                if (digitError) "Keyword needs to be a natural number"
-                else if (lengthError) "Keyword and message must have the same length"
-                else "An unknown error occurred while processing the message",
+                if (digitError) getString(R.string.error_keyword_not_natural_number)
+                else if (lengthError) getString(R.string.error_keyword_and_message_length_differ)
+                else getString(R.string.error_unkown_at_cipher),
                 Toast.LENGTH_SHORT
             ).show()
             return false

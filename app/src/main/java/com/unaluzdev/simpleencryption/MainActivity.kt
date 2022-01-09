@@ -3,17 +3,17 @@ package com.unaluzdev.simpleencryption
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.unaluzdev.simpleencryption.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var encryptionMethods: Array<String>
-    private lateinit var messageEditTextField: EditText
-    private lateinit var keywordEditTextField: EditText
-    private lateinit var dropdownMenu: AutoCompleteTextView
 
     private val alphabet = ('A'..'Z').toList() + ('a'..'z').toList()
 
@@ -25,24 +25,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Late init vars
         encryptionMethods = resources.getStringArray(R.array.encryptionMethods)
-        messageEditTextField = findViewById(R.id.messageEditTextField)
-        keywordEditTextField = findViewById(R.id.keywordEditTextField)
-        dropdownMenu = findViewById(R.id.menuAutoCompleteTextView)
 
         configureDropdownMenu()
 
         // Configure the encryption button
-        val encryptButton = findViewById<Button>(R.id.encryptButton)
-        encryptButton.setOnClickListener {
+        binding.encryptButton.setOnClickListener {
             cipher()
         }
 
-        val decryptButton = findViewById<Button>(R.id.DecryptButton)
-        decryptButton.setOnClickListener {
+        binding.DecryptButton.setOnClickListener {
             cipher(decrypt = true)
         }
     }
@@ -74,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             this, R.layout.menu_list_item,
             encryptionMethods
         )
-        with(dropdownMenu) {
+        with(binding.menuAutoCompleteTextView) {
             setAdapter(adapter)
             // Put the selected encryption method or simple_substitution by default
             setText(
@@ -90,9 +86,9 @@ class MainActivity : AppCompatActivity() {
      * returns false if message or keyword are blank
      */
     private fun cipher(decrypt: Boolean = false): Boolean {
-        val message = messageEditTextField.text.toString()
-        val keyword = keywordEditTextField.text.toString()
-        val method = dropdownMenu.text.toString()
+        val message = binding.messageEditTextField.text.toString()
+        val keyword = binding.keywordEditTextField.text.toString()
+        val method = binding.menuAutoCompleteTextView.text.toString()
 
         if (message.isBlank()) {
             Toast.makeText(
@@ -146,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // If everything went well and message was ciphered show ir
-        messageEditTextField.setText(newMessage)
+        binding.messageEditTextField.setText(newMessage)
 
         return true
     }

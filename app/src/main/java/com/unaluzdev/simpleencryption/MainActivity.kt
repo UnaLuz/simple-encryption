@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.isDigitsOnly
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -13,9 +14,8 @@ import com.unaluzdev.simpleencryption.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val viewModel: CipherViewModel by viewModels()
     private lateinit var encryptionMethods: Array<String>
-
-    private val alphabet = ('A'..'Z').toList() + ('a'..'z').toList()
 
     enum class Methods(val RID: Int) {
         CAESAR(R.string.caesar),
@@ -112,18 +112,18 @@ class MainActivity : AppCompatActivity() {
         var lengthError = false
         val newMessage: String? = when (method) {
             getString(Methods.SIMPLE_SUBSTITUTION.RID) ->
-                simpleSubstitutionCipher(message, keyword, decrypt)
+                viewModel.simpleSubstitutionCipher(message, keyword, decrypt)
             getString(Methods.CAESAR.RID) -> {
                 if (!keyword.isDigitsOnly()) {
                     digitError = true
                     null // newMessage will be null
-                } else caesarCipher(message, keyword.toInt(), decrypt)
+                } else viewModel.caesarCipher(message, keyword.toInt(), decrypt)
             }
             getString(Methods.ONE_TIME_PAD.RID) -> {
                 if (keyword.length != message.length) {
                     lengthError = true
                     null
-                } else oneTimePadCipher(message, keyword, decrypt)
+                } else viewModel.oneTimePadCipher(message, keyword, decrypt)
             }
             else -> null
         }
@@ -146,71 +146,4 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
-
-    /**
-     * Ciphers the given 'message' using the given 'keyword and One-Time-Pad cipher method.
-     * 'keyword' and 'message' must have the same length.
-     * Accepts an optional argument 'decrypt', when true it subtracts instead of adding the char code.
-     */
-    private fun oneTimePadCipher(
-        message: String,
-        keyword: String,
-        decrypt: Boolean = false
-    ): String {
-        val newMessage = message.mapIndexed { index, char ->
-            (if (decrypt) char.code - keyword[index].code else char.code + keyword[index].code).asChar()
-        }
-        return newMessage.joinToString(separator = "")
-    }
-
-    /**
-     * Ciphers the given 'message' using the given 'keyNumber' and Caesar cipher method.
-     * 'keyNumber' must be a positive integer (or natural number).
-     * Accepts an optional argument 'decrypt', when true it subtracts instead of adding the key
-     */
-    private fun caesarCipher(message: String, keyNumber: Int, decrypt: Boolean = false): String {
-        val newMessage = message.map {
-            (if (decrypt) it.code - keyNumber else it.code + keyNumber).asChar()
-        }
-        return newMessage.joinToString(separator = "")
-    }
-
-    /**
-     * Ciphers the given 'message' using the given 'keyword' and the Simple Substitution method
-     */
-    private fun simpleSubstitutionCipher(
-        message: String,
-        keyword: String,
-        decrypt: Boolean = false
-    ): String {
-        val noSpacesKeyword = keyword.replace(regex = Regex("\\s"), "")
-        val modifiedAlphabet =
-            withoutDuplicates(withoutDuplicates(noSpacesKeyword.toList()) + alphabet)
-        val newMessage = message.map {
-            if (decrypt) newChar(alphabet, modifiedAlphabet, it)
-            else newChar(modifiedAlphabet, alphabet, it)
-        }
-        return newMessage.joinToString(separator = "")
-    }
-
-    /**
-     * Removes the duplicate characters of a given list
-     */
-    private fun withoutDuplicates(charList: List<Char>) = charList.toSet().toList()
-
-    /**
-     * Receives two Char lists, an original list to get the index from of the char,
-     * and a new list to get the new char at that position/index.
-     *
-     * Returns the char that is in the same position as the given char but in the new list.
-     * Returns the same char if the char is not in the original list.
-     *
-     * Raises an error if the index found is greater than the max index of the new list.
-     */
-    private fun newChar(newCharList: List<Char>, originalCharList: List<Char>, char: Char): Char {
-        val index = originalCharList.indexOf(char)
-        return if (index != -1) newCharList[index] else char
-    }
-
-    private fun Int.asChar(): Char = this.mod(Char.MAX_VALUE.code).toChar()
 }

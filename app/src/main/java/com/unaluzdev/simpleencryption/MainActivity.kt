@@ -1,7 +1,6 @@
 package com.unaluzdev.simpleencryption
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -34,6 +33,18 @@ class MainActivity : AppCompatActivity() {
 
         binding.DecryptButton.setOnClickListener {
             cipher(decrypt = true)
+        }
+
+        viewModel.state.observe(this) { state ->
+            state.messageError?.let { binding.messageEditTextField.error = getString(it) }
+            state.keyError?.let { binding.keywordEditTextField.error = getString(it) }
+            state.otherError?.let { error ->
+                Toast.makeText(
+                    this@MainActivity,
+                    error,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -73,10 +84,6 @@ class MainActivity : AppCompatActivity() {
             )
             setOnItemClickListener { _, _, index, _ ->
                 val item = adapter.getItem(index).orEmpty()
-                val position = adapter.getItemId(index)
-                Log.d("MainActivity", "Item: $item, position: $position, index: $index")
-
-//                val itemMethod = encryptionMethods[item]
                 viewModel.onMethodSelected(item) { getString(it) }
             }
         }
@@ -91,37 +98,10 @@ class MainActivity : AppCompatActivity() {
         val message = binding.messageEditTextField.text.toString()
         val keyword = binding.keywordEditTextField.text.toString()
 
-        if (message.isBlank()) {
-            Toast.makeText(
-                this,
-                getString(R.string.error_message_empty),
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-
-        if (keyword.isBlank()) {
-            Toast.makeText(
-                this,
-                getString(R.string.error_keyword_empty),
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-
         val newMessage: String? = viewModel.onTryCipher(message, keyword, decrypt)
 
-        if (newMessage.isNullOrBlank()) {
-            Toast.makeText(
-                this,
-                getString(R.string.error_unknown_at_cipher),
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-
-        // If everything went well and message was ciphered show ir
-        binding.messageEditTextField.setText(newMessage)
+        // If everything went well and message was ciphered show it
+        newMessage?.let { binding.messageEditTextField.setText(it) }
 
         return true
     }

@@ -3,6 +3,8 @@ package com.unaluzdev.simpleencryption
 import android.util.Log
 import androidx.annotation.StringRes
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class CipherViewModel : ViewModel() {
@@ -23,12 +25,21 @@ class CipherViewModel : ViewModel() {
         }
     }
 
+    data class UIState(
+        @StringRes val messageError: Int? = null,
+        @StringRes val keyError: Int? = null,
+        @StringRes val otherError: Int? = null
+    )
+
     private val alphabet = ('A'..'Z').toList() + ('a'..'z').toList()
 
     private val stringResourceList = CipherMethod.stringResourceList()
 
     private var _methodSelected: Int = R.string.simple_substitution
     val methodSelected get() = _methodSelected
+
+    private val _state = MutableLiveData(UIState())
+    val state: LiveData<UIState> get() = _state
 
     fun onMethodSelected(itemMethod: String, lambda: (Int) -> String) {
         // Map the string resource IDs of the cipher methods with their Strings
@@ -39,21 +50,50 @@ class CipherViewModel : ViewModel() {
     }
 
     fun onTryCipher(message: String, keyword: String, decrypt: Boolean = false): String? {
-        return when (_methodSelected) {
+        val messageError = if (message.isBlank()) R.string.error_message_empty else null
+        var keyError = if (keyword.isBlank()) R.string.error_keyword_empty else null
+        var otherError: Int? = null
+
+        if (messageError != null || keyError != null) {
+            _state.value = UIState(
+                messageError = messageError,
+                keyError = keyError
+            )
+            return null
+        }
+
+        val newMessage = when (_methodSelected) {
             CipherMethod.SimpleSubstitution.RID -> {
                 simpleSubstitutionCipher(message, keyword, decrypt)
             }
             CipherMethod.Caesar.RID -> {
                 if (keyword.isDigitsOnly())
                     caesarCipher(message, keyword.toInt(), decrypt)
-                else null
+                else {
+                    keyError = R.string.error_keyword_not_natural_number
+                    null
+                }
             }
             CipherMethod.OneTimePad.RID ->
                 if (message.length == keyword.length)
                     oneTimePadCipher(message, keyword, decrypt)
-                else null
-            else -> null
+                else {
+                    otherError = R.string.error_keyword_and_message_length_differ
+                    null
+                }
+            else -> {
+                otherError = R.string.error_unknown_at_cipher
+                null
+            }
         }
+
+        return if (keyError != null || otherError != null) {
+            _state.value = UIState(
+                otherError = otherError,
+                keyError = keyError
+            )
+            null
+        } else newMessage
     }
 
     /**

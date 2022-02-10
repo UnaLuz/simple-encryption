@@ -36,8 +36,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.state.observe(this) { state ->
-            state.messageError?.let { binding.messageEditTextField.error = getString(it) }
-            state.keyError?.let { binding.keywordEditTextField.error = getString(it) }
+            binding.messageTextField.error = when (state.messageError) {
+                null -> null
+                else -> getString(state.messageError)
+            }
+            binding.keywordTextField.error = when (state.keyError){
+                null -> null
+                else -> getString(state.keyError)
+            }
             state.otherError?.let { error ->
                 Toast.makeText(
                     this@MainActivity,
@@ -95,13 +101,13 @@ class MainActivity : AppCompatActivity() {
      * returns false if message or keyword are blank
      */
     private fun cipher(decrypt: Boolean = false): Boolean {
-        val message = binding.messageEditTextField.text.toString()
-        val keyword = binding.keywordEditTextField.text.toString()
+        val message = binding.messageTextField.editText?.text.toString()
+        val keyword = binding.keywordTextField.editText?.text.toString()
 
         val newMessage: String? = viewModel.onTryCipher(message, keyword, decrypt)
 
         // If everything went well and message was ciphered show it
-        newMessage?.let { binding.messageEditTextField.setText(it) }
+        newMessage?.let { binding.messageTextField.editText?.setText(it) }
 
         return true
     }

@@ -87,13 +87,12 @@ class CipherViewModel : ViewModel() {
             }
         }
 
-        return if (keyError != null || otherError != null) {
-            _state.value = UIState(
-                otherError = otherError,
-                keyError = keyError
-            )
-            null
-        } else newMessage
+        _state.value = UIState(
+            messageError = messageError,
+            otherError = otherError,
+            keyError = keyError
+        )
+        return newMessage
     }
 
     /**
